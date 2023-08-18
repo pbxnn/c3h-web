@@ -1,139 +1,84 @@
 <template>
-  <el-table :data="list" border fit highlight-current-row style="width: 100%">
-    <el-table-column
-      v-loading="loading"
-      align="center"
-      label="参数名"
-      min-width="120"
-      element-loading-text="请给我点时间！"
-    >
-      <template slot-scope="scope">
-        <span>{{ scope.row.name }}</span>
-      </template>
-    </el-table-column>
+  <el-form ref="form" :model="form" label-width="140px" size="medium">
+    <el-col :span="12">
+      <el-form-item label="入口MAPD(mol%)" required>
+        <el-input v-model="form.name" maxlength="120px" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="出口MAPD(mol%)" required>
+        <el-input v-model="form.name" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="入口丙烯(mol%)" required>
+        <el-input v-model="form.name" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="出口丙烯(mol%)" required>
+        <el-input v-model="form.name" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="入口丙烷(mol%)" required>
+        <el-input v-model="form.name" />
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="出口丙烷(mol%)" required>
+        <el-input v-model="form.name" />
+      </el-form-item>
+    </el-col>
 
-    <el-table-column min-width="180px" align="center" label="描述">
-      <template slot-scope="scope">
-        <span>{{ scope.row.desc }}</span>
-      </template>
-    </el-table-column>
+    <el-form-item label="氢炔比(%)" required>
+      <el-input v-model="form.name" />
+    </el-form-item>
 
-    <el-table-column min-width="100px" align="center" label="实际值">
-      <template slot-scope="{row}">
-        <span>{{ row.realValue }}</span>
-        <!-- <el-tag>{{ row.real_value }}</el-tag> -->
-      </template>
-    </el-table-column>
+    <el-form-item label="选择性(%)" required>
+      <el-input v-model="form.name" />
+    </el-form-item>
 
-    <el-table-column min-width="100px" align="center" label="设定值">
-      <template slot-scope="{row}">
-        <span>{{ row.setValue }}</span>
-        <!-- <el-tag>{{ row.real_value }}</el-tag> -->
-      </template>
-    </el-table-column>
+    <el-form-item label="转化率(%)" required>
+      <el-input v-model="form.name" />
+    </el-form-item>
 
-    <el-table-column min-width="60px" align="center" label="单位">
-      <template slot-scope="scope">
-        <span>{{ scope.row.unit }}</span>
-      </template>
-    </el-table-column>
-
-    <el-table-column width="120px" align="center" label="高限">
-      <template slot-scope="scope">
-        <!-- <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" /> -->
-        <span>{{ scope.row.highLimit }}</span>
-      </template>
-    </el-table-column>
-
-    <!-- <el-table-column align="center" label="低限" width="120px">
-      <template slot-scope="scope">
-        <span>{{ scope.row.lowLimit }}</span>
-      </template>
-    </el-table-column> -->
-
-    <!-- <el-table-column class-name="status-col" label="Status" width="110">
-      <template slot-scope="{row}">
-        <el-tag :type="row.status | statusFilter">
-          {{ row.status }}
-        </el-tag>
-      </template>
-    </el-table-column> -->
-  </el-table>
+    <el-form-item label="分析时间" required>
+      <el-col :span="11">
+        <el-date-picker v-model="form.date1" type="date" placeholder="选择日期" style="width: 100%;" />
+      </el-col>
+      <el-col class="line" :span="2">-</el-col>
+      <el-col :span="11">
+        <el-time-picker v-model="form.date2" placeholder="选择时间" style="width: 100%;" />
+      </el-col>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="onSubmit">确认</el-button>
+      <el-button>取消</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
-// import { fetchList } from '@/api/article'
-import { getControlledVars, getConfoundingVars, getControllVars, getCatalyst } from '@/api/c3h'
-
 export default {
-  // MAPD、丙烯浓度、丙烷浓度、分析时间、氢炔比、选择性、转化率、分析确认
-  // filters: {
-  //   statusFilter(status) {
-  //     const statusMap = {
-  //       published: 'success',
-  //       draft: 'info',
-  //       deleted: 'danger'
-  //     }
-  //     return statusMap[status]
-  //   }
-  // },
-  props: {
-    type: {
-      type: String,
-      default: 'ControlledVars'
-    }
-  },
   data() {
     return {
-      list: null,
-      listQuery: {
-        type: this.type
-      },
-      loading: false
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      }
     }
   },
-  created() {
-    this.getList()
-  },
   methods: {
-    getList() {
-      this.loading = true
-      // this.$emit('create') // for test
-      switch (this.type) {
-        case 'ControlledVars':
-          getControlledVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-
-        case 'ControllVars':
-          getControllVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-
-        case 'ConfoundingVars':
-          getConfoundingVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-
-        case 'Catalyst':
-          getCatalyst().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-      }
+    onSubmit() {
+      console.log('submit!')
     }
   }
 }
 </script>
-

@@ -1,13 +1,13 @@
 <template>
-  <el-row :gutter="48" class="panel-group">
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
+  <el-row :gutter="24" class="panel-group">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <!-- <div class="card-panel-icon-wrapper icon-people">
           <svg-icon icon-class="peoples" class-name="card-panel-icon" />
         </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
-            DC402总开关
+            MAPD控制模式
           </div>
           <el-button :type="$data.swithInfo.DC402Total.type" class="card-panel-num" round>
             {{ $data.swithInfo.DC402Total.text }}
@@ -20,16 +20,16 @@
       </div>
     </el-col>
 
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <!-- <div class="card-panel-icon-wrapper icon-message">
           <svg-icon icon-class="message" class-name="card-panel-icon" />
         </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
-            DC402手动开关
+            APC主开关
           </div>
-          <el-button :type="$data.swithInfo.DC402Manual.type" class="card-panel-num" round>
+          <el-button :type="$data.swithInfo.DC402Manual.type" class="card-panel-num" round disabled>
             {{ $data.swithInfo.DC402Manual.text }}
           </el-button>
           <!-- <count-to :start-val="0" :end-val="81212" :duration="1" class="card-panel-num" /> -->
@@ -37,16 +37,16 @@
       </div>
     </el-col>
 
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <!-- <div class="card-panel-icon-wrapper icon-money">
           <svg-icon icon-class="money" class-name="card-panel-icon" />
         </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
-            DC402A/B选择
+            APC写入开关
           </div>
-          <el-button :type="$data.swithInfo.DC402AB.type" class="card-panel-num" round>
+          <el-button :type="$data.swithInfo.DC402AB.type" class="card-panel-num" round disabled>
             {{ $data.swithInfo.DC402AB.text }}
           </el-button>
           <!-- <count-to :start-val="0" :end-val="9280" :duration="1" class="card-panel-num" /> -->
@@ -54,51 +54,17 @@
       </div>
     </el-col>
 
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
+    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel">
         <!-- <div class="card-panel-icon-wrapper icon-shopping">
           <svg-icon icon-class="shopping" class-name="card-panel-icon" />
         </div> -->
         <div class="card-panel-description">
           <div class="card-panel-text">
-            出口MAPD选择
+            通讯
           </div>
-          <el-button :type="$data.swithInfo.MAPDExport.type" class="card-panel-num" round>
+          <el-button :type="$data.swithInfo.MAPDExport.type" class="card-panel-num" round disabled>
             {{ $data.swithInfo.MAPDExport.text }}
-          </el-button>
-          <!-- <count-to :start-val="0" :end-val="13600" :duration="1" class="card-panel-num" /> -->
-        </div>
-      </div>
-    </el-col>
-
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
-      <div class="card-panel">
-        <!-- <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div> -->
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            干燥剂切换
-          </div>
-          <el-button :type="$data.swithInfo.drier.type" class="card-panel-num" round>
-            {{ $data.swithInfo.drier.text }}
-          </el-button>
-          <!-- <count-to :start-val="0" :end-val="13600" :duration="1" class="card-panel-num" /> -->
-        </div>
-      </div>
-    </el-col>
-
-    <el-col :xs="8" :sm="8" :lg="4" class="card-panel-col">
-      <div class="card-panel">
-        <!-- <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
-        </div> -->
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            通讯中断报警
-          </div>
-          <el-button :type="$data.swithInfo.communication.type" class="card-panel-num" round>
-            {{ $data.swithInfo.communication.text }}
           </el-button>
           <!-- <count-to :start-val="0" :end-val="13600" :duration="1" class="card-panel-num" /> -->
         </div>
@@ -109,7 +75,7 @@
 
 <script>
 // import CountTo from 'vue-count-to'
-import { getSwitchInfo } from '@/api/c3h'
+import { getSwitchInfo } from '@/api/c3h-product-net'
 
 export default {
   components: {
@@ -118,19 +84,19 @@ export default {
   data() {
     return {
       swithInfo: {
-        DC_402_total: {
+        DC402Total: {
           text: '',
           type: ''
         },
-        DC_402_manual: {
+        DC402Manual: {
           text: '',
           type: ''
         },
-        DC_402_AB: {
+        DC402AB: {
           text: '',
           type: ''
         },
-        MAPD_export_choose: {
+        MAPDExport: {
           text: '',
           type: ''
         },
@@ -138,7 +104,7 @@ export default {
           text: '',
           type: ''
         },
-        communication_interrupt: {
+        communication: {
           text: '',
           type: ''
         }
@@ -156,6 +122,8 @@ export default {
         console.log(response)
         this.swithInfo = response.data
         this.loading = false
+      }, (response) => {
+        this.loading = false
       })
     }
   }
@@ -164,7 +132,7 @@ export default {
 
 <style lang="scss" scoped>
 .panel-group {
-  margin-top: 18px;
+  // margin-top: 18px;
 
   .card-panel-col {
     margin-bottom: 32px;
@@ -234,10 +202,10 @@ export default {
     }
 
     .card-panel-description {
-      float: right;
+      // float: right;
       font-weight: bold;
       margin: 26px;
-      margin-left: 0px;
+      // margin-left: 0px;
 
       .card-panel-text {
         line-height: 14px;

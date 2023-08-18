@@ -109,7 +109,7 @@
 
 <script>
 // import CountTo from 'vue-count-to'
-import { getSwitchInfo } from '@/api/c3h'
+import { getSwitchInfo } from '@/api/c3h-product-net'
 
 export default {
   components: {
@@ -118,19 +118,19 @@ export default {
   data() {
     return {
       swithInfo: {
-        DC_402_total: {
+        DC402Total: {
           text: '',
           type: ''
         },
-        DC_402_manual: {
+        DC402Manual: {
           text: '',
           type: ''
         },
-        DC_402_AB: {
+        DC402AB: {
           text: '',
           type: ''
         },
-        MAPD_export_choose: {
+        MAPDExport: {
           text: '',
           type: ''
         },
@@ -138,7 +138,7 @@ export default {
           text: '',
           type: ''
         },
-        communication_interrupt: {
+        communication: {
           text: '',
           type: ''
         }
@@ -155,6 +155,8 @@ export default {
       getSwitchInfo().then(response => {
         console.log(response)
         this.swithInfo = response.data
+        this.loading = false
+      }, (response) => {
         this.loading = false
       })
     }

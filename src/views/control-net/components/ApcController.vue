@@ -1,139 +1,200 @@
 <template>
-  <el-table :data="list" border fit highlight-current-row style="width: 100%">
-    <el-table-column
-      v-loading="loading"
-      align="center"
-      label="参数名"
-      min-width="120"
-      element-loading-text="请给我点时间！"
-    >
-      <template slot-scope="scope">
-        <span>{{ scope.row.name }}</span>
-      </template>
-    </el-table-column>
+  <div class="app-container">
+    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+      <el-table-column align="center" label="参数名">
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
 
-    <el-table-column min-width="180px" align="center" label="描述">
-      <template slot-scope="scope">
-        <span>{{ scope.row.desc }}</span>
-      </template>
-    </el-table-column>
+      <el-table-column align="center" label="描述">
+        <template slot-scope="{row}">
+          <span>{{ row.desc }}</span>
+        </template>
+      </el-table-column>
 
-    <el-table-column min-width="100px" align="center" label="实际值">
-      <template slot-scope="{row}">
-        <span>{{ row.realValue }}</span>
-        <!-- <el-tag>{{ row.real_value }}</el-tag> -->
-      </template>
-    </el-table-column>
+      <!-- <el-table-column width="120px" align="center" label="Author">
+        <template slot-scope="{row}">
+          <span>{{ row.author }}</span>
+        </template>
+      </el-table-column>
 
-    <el-table-column min-width="100px" align="center" label="设定值">
-      <template slot-scope="{row}">
-        <span>{{ row.setValue }}</span>
-        <!-- <el-tag>{{ row.real_value }}</el-tag> -->
-      </template>
-    </el-table-column>
+      <el-table-column width="100px" label="Importance">
+        <template slot-scope="{row}">
+          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
+        </template>
+      </el-table-column>
 
-    <el-table-column min-width="60px" align="center" label="单位">
-      <template slot-scope="scope">
-        <span>{{ scope.row.unit }}</span>
-      </template>
-    </el-table-column>
+      <el-table-column class-name="status-col" label="Status" width="110">
+        <template slot-scope="{row}">
+          <el-tag :type="row.status | statusFilter">
+            {{ row.status }}
+          </el-tag>
+        </template>
+      </el-table-column> -->
 
-    <el-table-column width="120px" align="center" label="高限">
-      <template slot-scope="scope">
-        <!-- <svg-icon v-for="n in +scope.row.importance" :key="n" icon-class="star" /> -->
-        <span>{{ scope.row.highLimit }}</span>
-      </template>
-    </el-table-column>
+      <el-table-column label="设定值">
+        <template slot-scope="{row}">
+          <template v-if="row.isSwitch">
+            <template v-if="row.edit">
+              <!-- <el-input v-model="row.setValue" class="edit-input" size="small" /> -->
+              <el-switch v-model="row.setValue" />
+              <el-button
+                class="cancel-btn"
+                size="small"
+                icon="el-icon-refresh"
+                type="warning"
+                @click="cancelEdit(row)"
+              >
+                cancel
+              </el-button>
+            </template>
+            <!-- <span v-else>{{ row.setValue }}</span> -->
+            <el-switch v-else v-model="row.setValue" disabled />
+          </template>
+          <template v-else>
+            <template v-if="row.edit">
+              <el-input v-model="row.setValue" class="edit-input" size="small" />
+              <el-button
+                class="cancel-btn"
+                size="small"
+                icon="el-icon-refresh"
+                type="warning"
+                @click="cancelEdit(row)"
+              >
+                cancel
+              </el-button>
+            </template>
+            <span v-else>{{ row.setValue }}</span>
+          </template>
+        </template>
+      </el-table-column>
 
-    <!-- <el-table-column align="center" label="低限" width="120px">
-      <template slot-scope="scope">
-        <span>{{ scope.row.lowLimit }}</span>
-      </template>
-    </el-table-column> -->
-
-    <!-- <el-table-column class-name="status-col" label="Status" width="110">
-      <template slot-scope="{row}">
-        <el-tag :type="row.status | statusFilter">
-          {{ row.status }}
-        </el-tag>
-      </template>
-    </el-table-column> -->
-  </el-table>
+      <el-table-column align="center" label="Actions">
+        <template v-if="row.editAble" slot-scope="{row}">
+          <el-button
+            v-if="row.edit"
+            type="success"
+            size="small"
+            icon="el-icon-circle-check-outline"
+            @click="confirmEdit(row)"
+          >
+            Ok
+          </el-button>
+          <el-button
+            v-else
+            type="primary"
+            size="small"
+            icon="el-icon-edit"
+            @click="row.edit=!row.edit"
+          >
+            Edit
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
-// import { fetchList } from '@/api/article'
-import { getControlledVars, getConfoundingVars, getControllVars, getCatalyst } from '@/api/c3h'
+import { getR401APC, setR401APC } from '@/api/c3h-control-net'
 
 export default {
-  // MAPD控制状态、APC选择开关、APC写入开关、通讯状态
-  // filters: {
-  //   statusFilter(status) {
-  //     const statusMap = {
-  //       published: 'success',
-  //       draft: 'info',
-  //       deleted: 'danger'
-  //     }
-  //     return statusMap[status]
-  //   }
-  // },
-  props: {
-    type: {
-      type: String,
-      default: 'ControlledVars'
+  name: 'InlineEditTable',
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
+      }
+      return statusMap[status]
     }
   },
   data() {
     return {
       list: null,
-      listQuery: {
-        type: this.type
-      },
-      loading: false
+      listLoading: true
     }
   },
   created() {
     this.getList()
   },
   methods: {
-    getList() {
-      this.loading = true
-      // this.$emit('create') // for test
-      switch (this.type) {
-        case 'ControlledVars':
-          getControlledVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
+    async getList() {
+      this.listLoading = true
+      await getR401APC().then((res) => {
+        this.list = res.data.list.map(v => {
+          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+          v.originalSetValue = v.setValue //  will be used when user click the cancel botton
+          if (v.isSwitch) {
+            v.setValue = v.switchStatus
+            v.originalSetValue = v.switchStatus
+          }
+          return v
+        })
+        this.listLoading = false
+      }, (response) => {
+        this.listLoading = false
+      })
 
-        case 'ControllVars':
-          getControllVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-
-        case 'ConfoundingVars':
-          getConfoundingVars().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
-
-        case 'Catalyst':
-          getCatalyst().then(response => {
-            // console.log(response)
-            this.list = response.data.list
-            this.loading = false
-          })
-          break
+      // const { data } = await getR401APC()
+      // this.list = data.list.map(v => {
+      //   this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
+      //   v.originalSetValue = v.setValue //  will be used when user click the cancel botton
+      //   if (v.isSwitch) {
+      //     v.setValue = v.switchStatus
+      //     v.originalSetValue = v.switchStatus
+      //   }
+      //   return v
+      // })
+      this.listLoading = false
+    },
+    cancelEdit(row) {
+      row.setValue = row.originalSetValue
+      row.edit = false
+      this.$message({
+        message: row.name + ' has been restored to the original value',
+        type: 'warning'
+      })
+    },
+    confirmEdit(row) {
+      this.listLoading = true
+      row.edit = false
+      const data = {
+        'name': row.name,
+        'set_value': row.setValue
       }
+      setR401APC(data).then(() => {
+        row.originalSetValue = row.setValue //  will be used when user click the cancel botton
+        if (row.isSwitch) {
+          row.setValue = row.switchStatus
+          row.originalSetValue = row.switchStatus
+        }
+        this.$notify({
+          title: 'Success',
+          message: row.name + 'Created Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.listLoading = false
+      }, (response) => {
+        row.edit = true
+        row.setValue = row.originalSetValue
+        this.listLoading = false
+      })
     }
   }
 }
 </script>
 
+<style scoped>
+.edit-input {
+  padding-right: 100px;
+}
+.cancel-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+</style>

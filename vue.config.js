@@ -35,12 +35,13 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      '/c3h': {
+        target: 'http://localhost:8000',
+        changeOrigin: true
+      }
     }
-    // proxy: {
-    //   '/vue-element-admin': {
-    //     target: process.env.VUE_APP_BASE_API_MOCK
-    //   }
-    // },
     // before: require('./mock/mock-server.js')
   },
   configureWebpack: {

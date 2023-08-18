@@ -63,7 +63,7 @@
 
 <script>
 // import { fetchList } from '@/api/article'
-import { getControlledVars, getConfoundingVars, getControllVars, getCatalyst } from '@/api/c3h'
+import { getControlledVars, getConfoundingVars, getControllVars, getCatalyst } from '@/api/c3h-product-net'
 
 export default {
   // filters: {
@@ -104,6 +104,8 @@ export default {
             // console.log(response)
             this.list = response.data.list
             this.loading = false
+          }, () => {
+            this.loading = false
           })
           break
 
@@ -111,6 +113,8 @@ export default {
           getControllVars().then(response => {
             // console.log(response)
             this.list = response.data.list
+            this.loading = false
+          }, () => {
             this.loading = false
           })
           break
@@ -120,6 +124,8 @@ export default {
             // console.log(response)
             this.list = response.data.list
             this.loading = false
+          }, () => {
+            this.loading = false
           })
           break
 
@@ -127,6 +133,8 @@ export default {
           getCatalyst().then(response => {
             // console.log(response)
             this.list = response.data.list
+            this.loading = false
+          }, () => {
             this.loading = false
           })
           break

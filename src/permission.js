@@ -72,6 +72,7 @@ router.beforeEach(async(to, from, next) => {
   if (hasToken) {
     next()
     const accessRoutes = await store.dispatch('permission/generateRoutes', role)
+    // console.log(accessRoutes)
     router.addRoutes(accessRoutes)
   }
 })
