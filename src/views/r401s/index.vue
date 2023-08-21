@@ -1,6 +1,6 @@
 <template>
   <div class="tab-container">
-    <switch-info />
+    <APC-control />
 
     <!-- <el-tag>mounted times ：{{ createdTimes }}</el-tag> -->
     <!-- <el-alert :closable="false" style="width:200px;display:inline-block;vertical-align: middle;margin-left:30px;" title="Tab with keep-alive" type="success" /> -->
@@ -23,17 +23,16 @@
 </template>
 
 <script>
-import SwitchInfo from './components/SwitchInfo'
+import APCControl from './components/APCControl'
 import OperationVars from './components/OperationVars'
 import ConfoundingVars from './components/ConfoundingVars'
 import StatusVars from './components/StatusVars'
 import ReactorPerformance from './components/ReactorPerformance'
 
-
 export default {
   name: 'Tab',
   components: {
-    SwitchInfo,
+    APCControl,
     OperationVars,
     ConfoundingVars,
     StatusVars,

@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getR401SSwitchInfo() {
+export function getR401SAPCControl() {
   return request({
-    url: '/c3h/r401s/switch',
+    url: '/c3h/r401s/apc-control',
     method: 'get'
   })
 }
@@ -35,9 +35,17 @@ export function getR401SReactorPerformance() {
   })
 }
 
-export function setR401SSwitch(data) {
+export function setR401SAPCControl(data) {
   return request({
-    url: '/c3h/r401s/switch',
+    url: '/c3h/r401s/apc-control',
+    method: 'post',
+    data
+  })
+}
+
+export function setR401SControlSwitch(data) {
+  return request({
+    url: '/c3h/r401s/control-switch',
     method: 'post',
     data
   })
@@ -53,7 +61,7 @@ export function resetR401SVar(data) {
 
 export function confirmReactorPerformance(data) {
   return request({
-    url: '/c3h/t401s/reactor-performance',
+    url: '/c3h/r401s/reactor-perf',
     method: 'post',
     data
   })

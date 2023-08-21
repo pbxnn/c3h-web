@@ -32,14 +32,14 @@
       </el-table-column>
 
       <el-table-column min-width="60px" align="center" label="设定值">
-        <template slot-scope="{row}">
-          <span>{{ row.setValue }}</span>
+        <template slot-scope="scope">
+          <span>{{ scope.row.setValue }}</span>
         </template>
       </el-table-column>
 
       <el-table-column min-width="60px" align="center" label="计算值">
-        <template slot-scope="{row}">
-          <span>{{ row.calcValue }}</span>
+        <template slot-scope="scope">
+          <span>{{ scope.row.calcValue }}</span>
         </template>
       </el-table-column>
 
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { getR401SOperationVars, setR401SSwitch, resetR401SVar } from '@/api/c3h-r401s'
+import { getR401SOperationVars, setR401SControlSwitch, resetR401SVar } from '@/api/c3h-r401s'
 
 export default {
   name: 'InlineEditTable',
@@ -146,10 +146,54 @@ export default {
       })
     },
     resetVar(row) {
-
+      this.listLoading = true
+      const req = {
+        'key': row.key
+      }
+      resetR401SVar(req).then((res) => {
+        row.calcValue = res.data.calcValue
+        this.$notify({
+          title: 'Success',
+          message: row.desc + '复位成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.listLoading = false
+      }, () => {
+        this.listLoading = false
+      })
     },
     changeSwitch(row) {
+      this.listLoading = true
+      let controlSwitchStatus = 1
 
+      if (row.extra.controlSwitchStatus) {
+        controlSwitchStatus = 0
+      }
+      const req = {
+        'key': row.key,
+        'status': controlSwitchStatus
+      }
+      setR401SControlSwitch(req).then((res) => {
+        row.extra.controlSwitchStatus = res.data.extra.controlSwitchStatus
+        if (res.data.extra.controlSwitchStatus === 1) {
+          row.extra.controlSwitchButtonType = 'success'
+          row.extra.controlSwitchButtonText = 'on'
+        } else {
+          row.extra.controlSwitchButtonType = 'danger'
+          row.extra.controlSwitchButtonText = 'off'
+        }
+
+        this.$notify({
+          title: 'Success',
+          message: row.desc + '控制开关修改为' + row.extra.controlSwitchButtonText,
+          type: 'success',
+          duration: 2000
+        })
+        this.listLoading = false
+      }, () => {
+        this.listLoading = false
+      })
     }
 
     // confirmEdit(row) {

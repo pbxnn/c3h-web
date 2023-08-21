@@ -40,7 +40,7 @@
             round
             @click="swithInfo.R401S_MAPD_control_mode.edit=true"
           >
-            {{ swithInfo.R401S_MAPD_control_mode.realValue }}
+            {{ swithInfo.R401S_MAPD_control_mode.setValue }}
           </el-button>
         </div>
       </div>
@@ -114,7 +114,7 @@
 
 <script>
 // import CountTo from 'vue-count-to'
-import { getR401SSwitchInfo } from '@/api/c3h-r401s'
+import { getR401SAPCControl, setR401SAPCControl } from '@/api/c3h-r401s'
 
 export default {
   components: {
@@ -137,10 +137,10 @@ export default {
     getSwitchInfo(type) {
       this.loading = true
       // this.$emit('create') // for test
-      getR401SSwitchInfo().then(res => {
+      getR401SAPCControl().then(res => {
         res.data.list.map(v => {
           if (v.type === 1) {
-            v.swithStatus = Boolean(v.realValue)
+            v.swithStatus = Boolean(v.setValue)
             if (v.swithStatus) {
               v.buttonType = 'success'
               v.buttonText = 'on'
@@ -161,21 +161,58 @@ export default {
       })
     },
     cancelEdit(switchDetail) {
-      switchDetail.setValue = switchDetail.realValue
-      switchDetail.edit = false
-      this.$message({
-        message: '取消修改' + switchDetail.name,
-        type: 'warning',
-        center: true
-      })
+
     },
     confirmEdit(switchDetail) {
-      switchDetail.realValue = switchDetail.setValue
-      switchDetail.edit = false
-      this.$message({
-        message: switchDetail.name + '修改成功',
-        type: 'success',
-        center: true
+      this.loading = true
+      // console.log(switchDetail, switchDetail.type === 1, switchDetail.setValue === 1)
+      if (switchDetail.type === 1) {
+        if (switchDetail.setValue === 1) {
+          switchDetail.setValue = 0
+        } else {
+          switchDetail.setValue = 1
+        }
+      }
+
+      const req = {
+        'key': switchDetail.key,
+        'type': switchDetail.type,
+        'set_value': switchDetail.setValue
+      }
+      setR401SAPCControl(req).then((res) => {
+        switchDetail.edit = false
+        this.loading = false
+
+        if (switchDetail.type === 1) {
+          switchDetail.swithStatus = Boolean(switchDetail.setValue)
+          if (switchDetail.swithStatus) {
+            switchDetail.buttonType = 'success'
+            switchDetail.buttonText = 'on'
+          } else {
+            switchDetail.buttonType = 'danger'
+            switchDetail.buttonText = 'off'
+          }
+        }
+
+        // if (switchDetail.type === 1) {
+        //   switchDetail.swithStatus = Boolean(switchDetail.realValue)
+        //   if (switchDetail.swithStatus) {
+        //     switchDetail.buttonType = 'success'
+        //     switchDetail.buttonText = 'on'
+        //   } else {
+        //     switchDetail.buttonType = 'danger'
+        //     switchDetail.buttonText = 'off'
+        //   }
+        // }
+
+        this.$message({
+          message: switchDetail.desc + '控制开关修改成功',
+          type: 'success',
+          center: true
+        })
+      }, (res) => {
+        switchDetail.edit = false
+        this.loading = false
       })
     }
   }
