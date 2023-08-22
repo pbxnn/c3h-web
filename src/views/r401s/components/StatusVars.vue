@@ -44,25 +44,20 @@
 import { getR401SStatusVars } from '@/api/c3h-r401s'
 
 export default {
-  name: 'InlineEditTable',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
   data() {
     return {
       list: null,
       listLoading: true
     }
   },
-  created() {
+  mounted() {
     this.getList()
+  },
+  created() {
+    this.startInterval()
+  },
+  beforeDestroy() {
+    this.stopInterval()
   },
   methods: {
     async getList() {
@@ -77,39 +72,14 @@ export default {
         this.listLoading = false
       })
     },
-    resetVar(row) {
-
+    startInterval() {
+      this.timer = setInterval(() => {
+        this.getList()
+      }, 5000)
     },
-    changeSwitch(row) {
-
+    stopInterval() {
+      clearInterval(this.timer)
     }
-
-    // confirmEdit(row) {
-    // this.listLoading = true
-    // row.edit = false
-    // const data = {
-    //   'name': row.name,
-    //   'set_value': row.setValue
-    // }
-    // setOperationVars(data).then(() => {
-    //   row.originalSetValue = row.setValue //  will be used when user click the cancel botton
-    //   if (row.isSwitch) {
-    //     row.setValue = row.switchStatus
-    //     row.originalSetValue = row.switchStatus
-    //   }
-    //   this.$notify({
-    //     title: 'Success',
-    //     message: row.name + 'Created Successfully',
-    //     type: 'success',
-    //     duration: 2000
-    //   })
-    //   this.listLoading = false
-    // }, (response) => {
-    //   row.edit = true
-    //   row.setValue = row.originalSetValue
-    //   this.listLoading = false
-    // })
-    // }
   }
 }
 </script>

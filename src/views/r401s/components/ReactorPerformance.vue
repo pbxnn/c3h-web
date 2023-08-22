@@ -12,12 +12,12 @@
     <el-main>
       <el-col :span="12">
         <el-form-item label="丙烯选择性(%)" required>
-          <el-input v-model="form.R401S_c3h6_selectivity" :disabled="true" />
+          <el-input v-model="form.R401S_c3h6_selectivity" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="MAPD转化率(%)" required>
-          <el-input v-model="form.R401S_MAPD_inversion_rate" :disabled="true" />
+          <el-input v-model="form.R401S_MAPD_inversion_rate" />
         </el-form-item>
       </el-col>
     </el-main>
@@ -33,36 +33,36 @@
     <el-main>
       <el-col :span="12">
         <el-form-item label="入口MAPD(mol%)" required>
-          <el-input v-model="form.R401S_ingress_MAPD_analysis" :placeholder="form.R401S_ingress_MAPD_analysis" maxlength="120px" :disabled="true" />
+          <el-input v-model="form.R401S_ingress_MAPD_analysis" :placeholder="form.R401S_ingress_MAPD_analysis" maxlength="120px" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="出口MAPD(ppm)" required>
-          <el-input v-model="form.R401S_egress_MAPD_analysis" :disabled="true" />
+          <el-input v-model="form.R401S_egress_MAPD_analysis" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="入口丙烯(mol%)" required>
-          <el-input v-model="form.R401S_ingress_c3h6_analysis" :disabled="true" />
+          <el-input v-model="form.R401S_ingress_c3h6_analysis" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="出口丙烯(mol%)" required>
-          <el-input v-model="form.R401S_egress_c3h6_analysis" :disabled="true" />
+          <el-input v-model="form.R401S_egress_c3h6_analysis" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="入口丙烷(mol%)" required>
-          <el-input v-model="form.R401S_ingress_c3h8_analysis" :disabled="true" />
+          <el-input v-model="form.R401S_ingress_c3h8_analysis" />
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="出口丙烷(mol%)" required>
-          <el-input v-model="form.R401S_egress_c3h8_analysis" :disabled="true" />
+          <el-input v-model="form.R401S_egress_c3h8_analysis" />
         </el-form-item>
       </el-col>
       <el-form-item label="分析时间" required>
-        <el-date-picker v-model="form.R401S_analysis_time" type="datetime" style="width: 100%;" :disabled="true" />
+        <el-date-picker v-model="form.R401S_analysis_time" type="datetime" style="width: 100%;" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="showConfirmDialog=true">确认</el-button>
@@ -107,10 +107,13 @@ export default {
     }
   },
   mounted() {
-    // this.form.R401S_analysis_time = new Date()
+    this.getPerformanceData()
   },
   created() {
-    this.getPerformanceData()
+    this.startInterval()
+  },
+  beforeDestroy() {
+    this.stopInterval()
   },
   methods: {
     async getPerformanceData() {
@@ -136,6 +139,14 @@ export default {
           duration: 2000
         })
       })
+    },
+    startInterval() {
+      this.timer = setInterval(() => {
+        this.getPerformanceData()
+      }, 5000)
+    },
+    stopInterval() {
+      clearInterval(this.timer)
     }
   }
 }

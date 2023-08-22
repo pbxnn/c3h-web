@@ -61,6 +61,7 @@ export const constantRoutes = [
   {
     path: '/product-net',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',
@@ -74,6 +75,7 @@ export const constantRoutes = [
   {
     path: '/control-net',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: 'index',

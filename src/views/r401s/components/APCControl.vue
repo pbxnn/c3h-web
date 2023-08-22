@@ -130,11 +130,17 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     this.getSwitchInfo()
   },
+  created() {
+    this.startInterval()
+  },
+  beforeDestroy() {
+    this.stopInterval()
+  },
   methods: {
-    getSwitchInfo(type) {
+    getSwitchInfo() {
       this.loading = true
       // this.$emit('create') // for test
       getR401SAPCControl().then(res => {
@@ -161,7 +167,9 @@ export default {
       })
     },
     cancelEdit(switchDetail) {
-
+      console.log(switchDetail)
+      switchDetail.edit = false
+      switchDetail.setValue = switchDetail.realValue
     },
     confirmEdit(switchDetail) {
       this.loading = true
@@ -192,6 +200,10 @@ export default {
             switchDetail.buttonType = 'danger'
             switchDetail.buttonText = 'off'
           }
+        } else {
+          switchDetail.setValue = res.data.setValue
+          switchDetail.realValue = res.data.realValue
+          switchDetail.calcValue = res.data.calcValue
         }
 
         // if (switchDetail.type === 1) {
@@ -206,7 +218,7 @@ export default {
         // }
 
         this.$message({
-          message: switchDetail.desc + '控制开关修改成功',
+          message: switchDetail.desc + '修改成功',
           type: 'success',
           center: true
         })
@@ -214,6 +226,14 @@ export default {
         switchDetail.edit = false
         this.loading = false
       })
+    },
+    startInterval() {
+      this.timer = setInterval(() => {
+        this.getSwitchInfo()
+      }, 5000)
+    },
+    stopInterval() {
+      clearInterval(this.timer)
     }
   }
 }
