@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="propsCfVars" border fit highlight-current-row style="width: 100%">
       <el-table-column min-width="60px" align="center" label="参数名">
         <template slot-scope="{row}">
           <span>{{ row.name }}</span>
@@ -50,31 +50,32 @@
 import { getR401SConfoundingVars } from '@/api/c3h-r401s'
 
 export default {
-  name: 'InlineEditTable',
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
+  props: {
+    'propsCfVars': {
+      type: Array,
+      default: null
+    }},
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: false
+    }
+  },
+  watch: {
+    propsCfVars(newVal, oldVal) {
+      // console.log('propsCfVars changed', newVal)
+      this.list = newVal
     }
   },
   mounted() {
-    this.getList()
+    // this.getList()
   },
   created() {
-    this.startInterval()
+    // this.getList()
+    // this.startInterval()
   },
   beforeDestroy() {
-    this.stopInterval()
+    // this.stopInterval()
   },
   methods: {
     async getList() {

@@ -117,9 +117,11 @@
 import { getR401SAPCControl, setR401SAPCControl } from '@/api/c3h-r401s'
 
 export default {
-  components: {
-    // CountTo
-  },
+  props: {
+    'propsApcVars': {
+      type: Array,
+      default: null
+    }},
   data() {
     return {
       swithInfo: {
@@ -130,14 +132,34 @@ export default {
       }
     }
   },
+  watch: {
+    propsApcVars(newVal, oldVal) {
+      // console.log('propsOpVars changed', newVal)
+      newVal.map(v => {
+        if (v.type === 1) {
+          v.swithStatus = Boolean(v.setValue)
+          if (v.swithStatus) {
+            v.buttonType = 'success'
+            v.buttonText = 'on'
+          } else {
+            v.buttonType = 'danger'
+            v.buttonText = 'off'
+          }
+        }
+        v.edit = false
+        this.swithInfo[v.key] = v
+      })
+    }
+  },
   mounted() {
-    this.getSwitchInfo()
+    // this.getSwitchInfo()
   },
   created() {
-    this.startInterval()
+    // this.getSwitchInfo()
+    // this.startInterval()
   },
   beforeDestroy() {
-    this.stopInterval()
+    // this.stopInterval()
   },
   methods: {
     getSwitchInfo() {

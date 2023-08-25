@@ -67,3 +67,9 @@ export function confirmReactorPerformance(data) {
   })
 }
 
+export function getR401SAll() {
+  return request({
+    url: '/c3h/r401s/all',
+    method: 'get'
+  })
+}

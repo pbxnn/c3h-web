@@ -90,6 +90,11 @@
 import { getR401SReactorPerformance, confirmReactorPerformance } from '@/api/c3h-r401s'
 
 export default {
+  props: {
+    'propsRpVars': {
+      type: Array,
+      default: null
+    }},
   data() {
     return {
       form: {
@@ -106,14 +111,25 @@ export default {
       showConfirmDialog: false
     }
   },
+  watch: {
+    propsRpVars(newVal, oldVal) {
+      // console.log('propsCfVars changed', newVal)
+      // this.list = newVal
+      newVal.map(v => {
+        this.$set(this.form, v.key, v.realValue)
+        this.form.R401S_analysis_time = new Date()
+      })
+    }
+  },
   mounted() {
-    this.getPerformanceData()
+    // this.getPerformanceData()
   },
   created() {
-    this.startInterval()
+    // this.getPerformanceData()
+    // this.startInterval()
   },
   beforeDestroy() {
-    this.stopInterval()
+    // this.stopInterval()
   },
   methods: {
     async getPerformanceData() {

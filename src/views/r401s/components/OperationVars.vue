@@ -105,22 +105,42 @@
 import { getR401SOperationVars, setR401SControlSwitch, resetR401SVar } from '@/api/c3h-r401s'
 
 export default {
+  props: {
+    'propsOpVars': {
+      type: Array,
+      default: null
+    }},
   data() {
     return {
       timer: null,
       list: null,
-      listLoading: true
+      listLoading: false
+    }
+  },
+  watch: {
+    propsOpVars(newVal, oldVal) {
+      // console.log('propsOpVars changed', newVal)
+      this.list = newVal.map(v => {
+        if (v.extra.controlSwitchStatus === 1) {
+          v.extra.controlSwitchButtonType = 'success'
+          v.extra.controlSwitchButtonText = 'on'
+        } else {
+          v.extra.controlSwitchButtonType = 'danger'
+          v.extra.controlSwitchButtonText = 'off'
+        }
+        return v
+      })
     }
   },
   mounted() {
-    this.getList()
+    // this.getList()
   },
   created() {
     // this.getList()
-    this.startInterval()
+    // this.startInterval()
   },
   beforeDestroy() {
-    this.stopInterval()
+    // this.stopInterval()
   },
   methods: {
     async getList() {
